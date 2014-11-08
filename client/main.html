@@ -1,0 +1,43 @@
+<head>
+	<title>spots</title>
+</head>
+
+<body>
+</body>
+
+<template name="layout">
+	<div id="wrap">
+		{{> navbar}}
+
+		<div class="container">
+			{{> yield}}
+		</div>
+		<div id="push"></div>
+	</div>
+	{{> footer}}
+</template>
+
+<template name="footer">
+	<div id="footer">
+		<div class="container">
+			<small>2014 © {{siteName}}</small>
+		</div>
+	</div>
+</template>
+
+<template name="loading">
+	<i class="fa fa-spinner fa-spin fa-2x pull-left"></i>
+</template>
+
+<template name="notFound">
+	<blockquote>
+		<h4>Cette page n'existe pas ou n'est pas accessible.</h4>
+	</blockquote>
+</template>
+
+<template name="home">
+	<div class="btn-group">
+		<a href="{{pathFor 'newSpot'}}" class="btn btn-primary"><i class="fa fa-plus fa-large"></i>&nbsp;Create</a>
+	</div>
+	{{> spotsList}}
+</template>

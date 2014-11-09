@@ -27,7 +27,7 @@
 	<div class="page-header">
 		<div class="btn-group pull-right">
 			{{#with this}}
-			<a href="{{pathFor 'editSpot'}}" class="btn btn-warning" id="editBtn"><i class="fa fa-pencil fa-2x"></i></a>
+			<a href="{{pathFor 'editSpot'}}" class="btn btn-warning" id="editBtn"><i class="fa fa-pencil"></i></a>
 			{{/with}}
 		</div>
 		<h1>{{name}}</h1>
@@ -40,7 +40,8 @@
 		<legend>Create spot</legend>
 		{{> afQuickField name='name'}}
 	</fieldset>
-	<button type="submit" class="btn btn-primary">Add</button>
+	<button type="button" class="btn btn-primary" id="cameraBtn"><i class="fa fa-camera-retro"></i>&nbsp;Photo</button>
+	<button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add</button>
 	{{/autoForm}}
 </template>
 

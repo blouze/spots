@@ -1,25 +1,28 @@
 <template name="spotsList">
-	<div class="table-responsive">
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Type</th>
-					<th>Created</th>
-				</tr>
-			</thead>
-			<tbody>
-				{{#each spots}}
-				{{#with this}}
-				<tr>
-					<td><a href="{{pathFor 'viewSpot'}}">{{name}}</a></td>
-					<td>{{type}}</td>
-					<td>{{createdAt}}</td>
-				</tr>
-				{{/with}}
-				{{/each}}
-			</tbody>
-		</table>
+	<div class="page-header">
+		<div class="btn-group pull-right">
+			<a href="{{pathFor 'newSpot'}}" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;new spot</a>
+		</div>
+		<h2>Spots</h2>
+	</div>
+	<div class="list-group">
+		{{#each spots}}
+		{{#with this}}
+		<a href="{{pathFor 'viewSpot'}}" class="list-group-item">{{> spotItem}}</a>
+		{{/with}}
+		{{/each}}
+	</div>
+</template>
+
+<template name="spotItem">
+	<div class="media">
+		<div class="media-left">
+			<img class="media-object" src="{{pictureThumbnail}}" alt="{{name}}">
+		</div>
+		<div class="media-body">
+			<h4 class="media-heading">{{name}}</h4>
+			<p>{{formatDate createdAt "calendar"}}</p>
+		</div>
 	</div>
 </template>
 
@@ -30,27 +33,51 @@
 			<a href="{{pathFor 'editSpot'}}" class="btn btn-warning" id="editBtn"><i class="fa fa-pencil"></i></a>
 			{{/with}}
 		</div>
-		<h1>{{name}}</h1>
+		<h2>{{name}}</h2>
+	</div>
+	<img src="{{picture}}" class="img-responsive" alt="Image">
+	<div class="btn-group">
+		<a type="button" class="btn btn-default" href="http://maps.google.com/maps?q={{location.coordinate.lng}},{{location.coordinate.lat}}"><i class="fa fa-plus"></i>&nbsp;View location</a>
 	</div>
 </template>
 
 <template name="newSpot">
 	{{#autoForm collection="Spots" id="insertSpotForm" type="insert"}}
+	{{#if spotPhotoSrc}}
+	<img src="{{spotPhotoSrc}}" class="img-responsive" alt="Image">
+	{{/if}}
 	<fieldset>
-		<legend>Create spot</legend>
+		<legend>
+			Create new spot
+			{{#unless spotPhotoSrc}}
+			<div class="control-group pull-right">
+				<button type="button" class="btn btn-warning" id="cameraBtn"><i class="fa fa-camera-retro"></i>&nbsp;take picture</button>
+			</div>
+			{{/unless}}
+		</legend>
+		{{> afQuickField name="picture" type="url" value=spotPhotoSrc}}
 		{{> afQuickField name='name'}}
+		{{> afQuickField name='location' type="hidden" value=userLocation}}
 	</fieldset>
-	<button type="button" class="btn btn-primary" id="cameraBtn"><i class="fa fa-camera-retro"></i>&nbsp;Photo</button>
-	<button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add</button>
+	<div class="btn-group pull-right">
+		<button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Create</button>
+	</div>
 	{{/autoForm}}
 </template>
 
 <template name="editSpot">
 	{{#autoForm collection="Spots" doc=this id="updateSpotForm" type="update"}}
+	<div class="page-header">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-danger" id="deleteSpot"><i class="fa fa-trash-o"></i></button>
+		</div>
+		<h2>Edit '{{name}}'</h2>
+	</div>
 	<fieldset>
-		<legend>Edit spot</legend>
 		{{> afQuickField name='name'}}
 	</fieldset>
-	<button type="submit" class="btn btn-primary">Update</button>
+	<div class="btn-group pull-right">
+		<button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o"></i>&nbsp;Update</button>
+	</div>
 	{{/autoForm}}
 </template>

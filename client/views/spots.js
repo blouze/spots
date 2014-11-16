@@ -4,20 +4,37 @@ Template.spotsList.helpers({
 	}
 });
 
+Template.spotItem.helpers({
+	pictureThumbnail: function () {
+		return Imgur.toThumbnail(this.picture, Imgur.SMALL_SQUARE);
+	}
+});
+
+Template.newSpot.helpers({
+	userLocation: function () {
+		var userLocation = Session.get("userLocation");
+		if (userLocation) {
+			return userLocation.coords.latitude + ", " + userLocation.coords.longitude;
+		}
+	},
+	uploadPhotoFormSchema: function() {
+		return Schema.uploadPhoto;
+	}
+});
+
 Template.newSpot.rendered = function () {
 	navigator.geolocation.getCurrentPosition(function (position) {
-		alert('Latitude: '          + position.coords.latitude          + '\n' +
-			'Longitude: '         + position.coords.longitude         + '\n' +
-			'Altitude: '          + position.coords.altitude          + '\n' +
-			'Accuracy: '          + position.coords.accuracy          + '\n' +
-			'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-			'Heading: '           + position.coords.heading           + '\n' +
-			'Speed: '             + position.coords.speed             + '\n' +
-			'Timestamp: '         + position.timestamp                + '\n');
+		Session.set("userLocation", position);
 	}, function (err) {
-		alert('code: '    + err.code    + '\n' +
+		console.log(
+			'code: '    + err.code    + '\n' +
 			'message: ' + err.message + '\n');
+	},{
+		enableHighAccuracy: true,
+		timeout: 5000,
+		maximumAge: 0
 	});
+	Session.set("spotPhoto", null);
 };
 
 Template.newSpot.helpers({
@@ -29,11 +46,28 @@ Template.newSpot.helpers({
 Template.newSpot.events({
 	'click button#cameraBtn': function () {
 		MeteorCamera.getPicture({}, function (err, data) {
-			if (!err)
-				Session.set("spotPhoto", data);
+			if (!err) {
+				Meteor.call("uploadPhotoToImgur", data, function (error, result) {
+					if (!error)
+						Session.set("spotPhoto", result.link);
+					else
+						console.log(error.message);
+				});
+			}
 			else
 				console.log(err.message);
 		});
+	}
+});
+
+Template.editSpot.events({
+	'click button#deleteSpot': function () {
+		if (confirm("Are you sure you want to delete '" + this.name + "'?")) {
+			Spots.remove(this._id, function (err) {
+				if (!err)
+					Router.go("home");
+			});
+		}
 	}
 });
 

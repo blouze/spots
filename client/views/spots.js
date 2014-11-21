@@ -1,6 +1,6 @@
 Template.spotsList.helpers({
 	spots: function () {
-		return Spots.find();
+		return Spots.find({}, {sort: {createdAt: -1}});
 	}
 });
 
@@ -10,21 +10,54 @@ Template.spotItem.helpers({
 	}
 });
 
-Template.newSpot.helpers({
-	userLocation: function () {
-		var userLocation = Session.get("userLocation");
-		if (userLocation) {
-			return userLocation.coords.latitude + ", " + userLocation.coords.longitude;
+
+
+Template.viewSpot.helpers({
+	pictureSquare: function () {
+		if (this.picture)
+			return Imgur.toThumbnail(this.picture, Imgur.HUGE_THUMBNAIL);
+	},
+	spotPosition: function () {
+		if (this.location) {
+			var coords = {
+				longitude: this.location[0],
+				latitude: this.location[1]
+			};
+			Meteor.setTimeout(function () {
+				gmaps.setCenter(coords);
+				gmaps.addMarker(coords);
+			}, 500);
+			return coords;
 		}
 	},
-	uploadPhotoFormSchema: function() {
-		return Schema.uploadPhoto;
+	instagramMedia: function () {
+		console.log(Session.get("instagramMedia"));
+		return Session.get("instagramMedia");
 	}
 });
 
+
+Template.viewSpot.rendered = function () {
+	Meteor.call('instagramMedia', {}, function (err, result) {
+		if (err)
+			console.log(err);
+		Session.set("instagramMedia", result);
+	});
+};
+
+
+
+Template.instagramItem.helpers({
+	createdAt: function () {
+		return moment.unix(this.created_time);
+	}
+});
+
+
+
 Template.newSpot.rendered = function () {
 	navigator.geolocation.getCurrentPosition(function (position) {
-		Session.set("userLocation", position);
+		Session.set("userPosition", position);
 	}, function (err) {
 		console.log(
 			'code: '    + err.code    + '\n' +
@@ -34,31 +67,47 @@ Template.newSpot.rendered = function () {
 		timeout: 5000,
 		maximumAge: 0
 	});
-	Session.set("spotPhoto", null);
+	Session.set("userPosition", null);
+	Session.set("imgurUpload", null);
 };
 
 Template.newSpot.helpers({
 	spotPhotoSrc: function () {
-		return Session.get("spotPhoto");
+		var imgurUpload = Session.get("imgurUpload");
+		if (imgurUpload)
+			return imgurUpload.image;
+	},
+	userPosition: function () {
+		var position = Session.get("userPosition");
+		if (position) {
+			gmaps.setCenter(position.coords);
+			gmaps.addMarker(position.coords);
+			return position.coords;
+		}
 	}
 });
 
 Template.newSpot.events({
 	'click button#cameraBtn': function () {
-		MeteorCamera.getPicture({}, function (err, data) {
-			if (!err) {
-				Meteor.call("uploadPhotoToImgur", data, function (error, result) {
-					if (!error)
-						Session.set("spotPhoto", result.link);
-					else
-						console.log(error.message);
-				});
-			}
-			else
-				console.log(err.message);
-		});
+		if (Meteor.isCordova)
+			MeteorCamera.getPicture({}, function (err, data) {
+				if (!err) {
+					Session.set("imgurUpload", {
+						type: "base64",
+						image: data
+					});
+				}
+				else
+					console.log(err.message);
+			});
+		else
+			Session.set("imgurUpload", {
+				type: "URL",
+				image: "http://goskateboardingday.le-site-du-skateboard.com/files/2011/05/module-palais-tokyo-skatepark-dome.JPG"
+			});
 	}
 });
+
 
 Template.editSpot.events({
 	'click button#deleteSpot': function () {
@@ -67,6 +116,35 @@ Template.editSpot.events({
 				if (!err)
 					Router.go("home");
 			});
+		}
+	}
+});
+
+
+AutoForm.addHooks('insertSpotForm', {
+	before: {
+		insert: function (doc, template) {
+
+			var userPosition = Session.get("userPosition");
+			if (userPosition)
+				doc.location = [userPosition.coords.longitude, userPosition.coords.latitude];
+
+			var imgurUpload = Session.get("imgurUpload");
+			if (imgurUpload) {
+				var ref = this;
+				imgurUpload.apiKey = "e5eb24c37ccf5ae";
+				Imgur.upload(imgurUpload, function (err, data) {
+					if (err)
+						console.log(err.message);
+					else {
+						console.log(data);
+						doc.picture = data.link;
+						return ref.result(doc);
+					}
+				});
+			}
+			else
+				return this.result(doc);
 		}
 	}
 });
@@ -86,3 +164,5 @@ AutoForm.addHooks(['insertSpotForm', 'updateSpotForm'], {
 		console.log(error);
 	}
 });
+
+//AutoForm.debug();

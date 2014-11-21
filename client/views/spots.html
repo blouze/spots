@@ -1,9 +1,9 @@
 <template name="spotsList">
 	<div class="page-header">
 		<div class="btn-group pull-right">
-			<a href="{{pathFor 'newSpot'}}" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;new spot</a>
+			<a href="{{pathFor 'newSpot'}}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i>&nbsp;new spot</a>
 		</div>
-		<h2>Spots</h2>
+		<h2><strong>Last spots added</strong></h2>
 	</div>
 	<div class="list-group">
 		{{#each spots}}
@@ -20,7 +20,7 @@
 			<img class="media-object" src="{{pictureThumbnail}}" alt="{{name}}">
 		</div>
 		<div class="media-body">
-			<h4 class="media-heading">{{name}}</h4>
+			<h4 class="media-heading"><strong>{{name}}</strong></h4>
 			<p>{{formatDate createdAt "calendar"}}</p>
 		</div>
 	</div>
@@ -30,37 +30,66 @@
 	<div class="page-header">
 		<div class="btn-group pull-right">
 			{{#with this}}
-			<a href="{{pathFor 'editSpot'}}" class="btn btn-warning" id="editBtn"><i class="fa fa-pencil"></i></a>
+			<a href="{{pathFor 'editSpot'}}" class="btn btn-warning btn-lg" id="editBtn"><i class="fa fa-pencil"></i></a>
 			{{/with}}
 		</div>
-		<h2>{{name}}</h2>
+		<h2><strong>{{name}}</strong></h2>
 	</div>
-	<img src="{{picture}}" class="img-responsive" alt="Image">
-	<div class="btn-group">
-		<a type="button" class="btn btn-default" href="http://maps.google.com/maps?q={{location.coordinate.lng}},{{location.coordinate.lat}}"><i class="fa fa-plus"></i>&nbsp;View location</a>
+	<div class="well well-lg">
+		<img src="{{pictureSquare}}" class="img-responsive" alt="{{name}}">
+	</div>
+	<ul class="list-group">
+		{{#each instagramMedia}}
+		{{#with this}}
+		<li class="list-group-item">{{> instagramItem}}</li>
+		{{/with}}
+		{{/each}}
+	</ul>
+</template>
+
+<template name="instagramItem">
+	<div class="instagramItem">
+		<img class="media-object img-rounded img-responsive" src="{{images.standard_resolution.url}}" alt="Image"><br>
+		<h4 class="media-heading"><strong>{{user.full_name}}</strong><br><small>{{formatDate createdAt "calendar"}}</small></h4>
+		<blockquote>{{caption.text}}</blockquote>
 	</div>
 </template>
 
 <template name="newSpot">
+	<div class="page-header">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default btn-lg" id="cameraBtn"><i class="fa fa-camera-retro"></i></button>
+		</div>
+		<h2><strong>Create new spot</strong></h2>
+	</div>
 	{{#autoForm collection="Spots" id="insertSpotForm" type="insert"}}
-	{{#if spotPhotoSrc}}
-	<img src="{{spotPhotoSrc}}" class="img-responsive" alt="Image">
-	{{/if}}
 	<fieldset>
-		<legend>
-			Create new spot
-			{{#unless spotPhotoSrc}}
-			<div class="control-group pull-right">
-				<button type="button" class="btn btn-warning" id="cameraBtn"><i class="fa fa-camera-retro"></i>&nbsp;take picture</button>
+		<div class="form-group {{#if afFieldIsInvalid name='picture'}}has-error{{/if}}">
+			{{#if afFieldIsInvalid name='picture'}}
+			<span class="help-block">{{afFieldMessage name='picture'}}</span>
+			{{/if}}
+		</div>
+		{{#if spotPhotoSrc}}
+		<div class="well well-lg">
+			<img src="{{spotPhotoSrc}}" class="img-responsive" alt="Image">
+		</div>
+		{{/if}}
+		<div class="form-group {{#if afFieldIsInvalid name='location'}}has-error{{/if}}">
+			{{#if afFieldIsInvalid name='location'}}
+			<span class="help-block">{{afFieldMessage name='location'}}</span>
+			{{/if}}
+		</div>
+		<div class="well well-lg">
+			{{> map}}
+			<div class="pull-right">
+				<strong>[{{userPosition.longitude}}, {{userPosition.latitude}}]</strong>
 			</div>
-			{{/unless}}
-		</legend>
-		{{> afQuickField name="picture" type="url" value=spotPhotoSrc}}
+		</div>
 		{{> afQuickField name='name'}}
-		{{> afQuickField name='location' type="hidden" value=userLocation}}
+		{{> afQuickField name='secret'}}
 	</fieldset>
-	<div class="btn-group pull-right">
-		<button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Create</button>
+	<div class="btn-group">
+		<button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-check-square-o"></i>&nbsp;Create</button>
 	</div>
 	{{/autoForm}}
 </template>
@@ -69,15 +98,15 @@
 	{{#autoForm collection="Spots" doc=this id="updateSpotForm" type="update"}}
 	<div class="page-header">
 		<div class="btn-group pull-right">
-			<button type="button" class="btn btn-danger" id="deleteSpot"><i class="fa fa-trash-o"></i></button>
+			<button type="button" class="btn btn-danger btn-lg" id="deleteSpot"><i class="fa fa-trash-o"></i></button>
 		</div>
-		<h2>Edit '{{name}}'</h2>
+		<h2><strong>{{name}}</strong> <small>edit</small></h2>
 	</div>
 	<fieldset>
 		{{> afQuickField name='name'}}
 	</fieldset>
-	<div class="btn-group pull-right">
-		<button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o"></i>&nbsp;Update</button>
+	<div class="btn-group">
+		<button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-check-square-o"></i>&nbsp;Update</button>
 	</div>
 	{{/autoForm}}
 </template>

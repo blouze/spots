@@ -1,5 +1,5 @@
 UI.registerHelper("siteName", function () {
-	return "Spots";
+	return "SpotON";
 });
 
 UI.registerHelper("formatDate", function(datetime, format) {

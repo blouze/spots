@@ -29,3 +29,19 @@ body {
 #iron-router-progress {
 	margin-top: 50px;
 }
+
+#map-canvas {
+    width: 100%;
+    height: 300px;
+}
+
+.gmnoprint a, .gmnoprint span, .gm-style-cc {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}
+
+blockquote {
+	font-size: 14.5px;
+}

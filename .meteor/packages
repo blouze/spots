@@ -8,8 +8,8 @@ mizzao:bootstrap-3
 iron:router
 aldeed:collection2
 aldeed:autoform
-mdg:geolocation
 mdg:camera
 simple:imgur
 mrt:moment
+mdg:geolocation
 

@@ -14,6 +14,7 @@ Template.spotItem.helpers({
 
 Template.viewSpot.helpers({
 	pictureSquare: function () {
+<<<<<<< HEAD
 		if (this.picture)
 			return Imgur.toThumbnail(this.picture, Imgur.HUGE_THUMBNAIL);
 	},
@@ -50,11 +51,25 @@ Template.viewSpot.rendered = function () {
 Template.instagramItem.helpers({
 	createdAt: function () {
 		return moment.unix(this.created_time);
+=======
+		return Imgur.toThumbnail(this.picture, Imgur.BIG_SQUARE);
+	},
+	latitude: function () {
+		if (this.location)
+			return this.location[0];
+	},
+	longitude: function () {
+		if (this.location)
+			return this.location[1];
+>>>>>>> 45eb433ff39ac242ea607b99dc466ac8b67289d5
 	}
 });
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 45eb433ff39ac242ea607b99dc466ac8b67289d5
 Template.newSpot.rendered = function () {
 	navigator.geolocation.getCurrentPosition(function (position) {
 		Session.set("userPosition", position);

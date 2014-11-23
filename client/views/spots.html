@@ -27,16 +27,22 @@
 </template>
 
 <template name="viewSpot">
-	<div class="page-header">
-		<div class="btn-group pull-right">
-			{{#with this}}
-			<a href="{{pathFor 'editSpot'}}" class="btn btn-warning btn-lg" id="editBtn"><i class="fa fa-pencil"></i></a>
-			{{/with}}
-		</div>
-		<h2><strong>{{name}}</strong></h2>
+	<div class="btn-group pull-right">
+		{{#with this}}
+		<a href="{{pathFor 'editSpot'}}" class="btn btn-warning btn-lg" id="editBtn"><i class="fa fa-pencil"></i></a>
+		{{/with}}
 	</div>
 	<div class="well well-lg">
 		<img src="{{pictureSquare}}" class="img-responsive" alt="{{name}}">
+		<div class="page-header">
+			<h3><strong>{{name}}</strong><br><small>{{hashtag}}</small></h3>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default" id="clipBoardBtn"><i class="fa fa-clipboard"></i>&nbsp; copy tag</button>
+			</div>
+			{{#if clipboardClicked}}
+			<small>&nbsp;Tag copied to clipboard</small>
+			{{/if}}
+		</div>
 	</div>
 	<ul class="list-group">
 		{{#each instagramMedia}}
@@ -49,8 +55,17 @@
 
 <template name="instagramItem">
 	<div class="instagramItem">
-		<img class="media-object img-rounded img-responsive" src="{{images.standard_resolution.url}}" alt="Image"><br>
-		<h4 class="media-heading"><strong>{{user.full_name}}</strong><br><small>{{formatDate createdAt "calendar"}}</small></h4>
+		<h4 class="media-heading">
+			<strong>{{user.full_name}}</strong>&nbsp;
+			{{#if isVideo}}
+			<i class="fa fa-video-camera"></i>
+			{{else}}
+			<i class="fa fa-camera"></i>
+			{{/if}}
+			<br>
+			<small>{{formatDate createdAt "calendar"}}</small>
+		</h4>
+		<img class="media-object img-rounded img-responsive" src="{{images.low_resolution.url}}" alt="Image"><br>
 		<blockquote>{{caption.text}}</blockquote>
 	</div>
 	<img src="{{pictureSquare}}" class="img-responsive" alt="{{name}}">

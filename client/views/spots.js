@@ -14,9 +14,8 @@ Template.spotItem.helpers({
 
 Template.viewSpot.helpers({
 	pictureSquare: function () {
-<<<<<<< HEAD
 		if (this.picture)
-			return Imgur.toThumbnail(this.picture, Imgur.HUGE_THUMBNAIL);
+			return Imgur.toThumbnail(this.picture, Imgur.BIG_SQUARE);
 	},
 	spotPosition: function () {
 		if (this.location) {
@@ -31,12 +30,17 @@ Template.viewSpot.helpers({
 			return coords;
 		}
 	},
+	hashtag: function () {
+		return "#SpotON_" + this._id;
+	},
+	clipboardClicked: function () {
+		return Session.get("clipboardClicked");
+	},
 	instagramMedia: function () {
-		console.log(Session.get("instagramMedia"));
+		//console.log(Session.get("instagramMedia"));
 		return Session.get("instagramMedia");
 	}
 });
-
 
 Template.viewSpot.rendered = function () {
 	Meteor.call('instagramMedia', {}, function (err, result) {
@@ -44,32 +48,32 @@ Template.viewSpot.rendered = function () {
 			console.log(err);
 		Session.set("instagramMedia", result);
 	});
+	Session.set("instagramMedia", null);
+	Session.set("clipboardClicked", false);
 };
+
+Template.viewSpot.events({
+	'click button#clipBoardBtn': function () {
+		if (Meteor.isCordova){
+			cordova.plugins.clipboard.copy("#SpotON_" + this._id);
+			Session.set("clipboardClicked", true);
+		}
+	}
+});
 
 
 
 Template.instagramItem.helpers({
 	createdAt: function () {
 		return moment.unix(this.created_time);
-=======
-		return Imgur.toThumbnail(this.picture, Imgur.BIG_SQUARE);
 	},
-	latitude: function () {
-		if (this.location)
-			return this.location[0];
-	},
-	longitude: function () {
-		if (this.location)
-			return this.location[1];
->>>>>>> 45eb433ff39ac242ea607b99dc466ac8b67289d5
+	isVideo: function () {
+		return this.type == "video";
 	}
 });
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 45eb433ff39ac242ea607b99dc466ac8b67289d5
 Template.newSpot.rendered = function () {
 	navigator.geolocation.getCurrentPosition(function (position) {
 		Session.set("userPosition", position);

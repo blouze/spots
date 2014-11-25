@@ -112,7 +112,10 @@ Template.newSpot.rendered = function () {
 		});
 		gmaps.setCenter(position.coords);
 		gmaps.addMarker(position.coords);
+		$("#modal-geolocation").modal("hide");
+		Meteor.clearTimeout(modalTimeout);
 	}, function (err) {
+		$("#modal-geolocation").modal("show");
 		console.log(
 			'code: '    + err.code    + '\n' +
 			'message: ' + err.message + '\n');
@@ -124,6 +127,9 @@ Template.newSpot.rendered = function () {
 	Session.set("userPosition", null);
 	Session.set("address", null);
 	Session.set("imgurUpload", null);
+	var modalTimeout = Meteor.setTimeout(function () {
+		$("#modal-geolocation").modal("show");
+	}, 200);
 };
 
 Template.newSpot.helpers({
@@ -131,17 +137,6 @@ Template.newSpot.helpers({
 		var imgurUpload = Session.get("imgurUpload");
 		if (imgurUpload)
 			return imgurUpload.image;
-	},
-	userPosition: function () {
-		var position = Session.get("userPosition");
-		if (position) {
-			return position.coords;
-		}
-	},
-	formatted_address: function () {
-		var address = Session.get("address");
-		if (address)
-			return Session.get("address").formatted_address;
 	}
 });
 
@@ -173,6 +168,8 @@ Template.editSpot.events({
 			Spots.remove(this._id, function (err) {
 				if (!err)
 					Router.go("home");
+				else
+					console.log(err);
 			});
 		}
 	}

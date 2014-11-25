@@ -123,6 +123,28 @@
 		<button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-check-square-o"></i>&nbsp;Create</button>
 	</div>
 	{{/autoForm}}
+	{{> geolocationModal}}
+</template>
+
+<template name="geolocationModal">
+	<div class="modal fade" id="modal-geolocation" data-backdrop="static">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Retrieving location</h4>
+				</div>
+				<div class="modal-body loader">
+					<i class="fa fa-circle-o-notch fa-spin fa-2x"></i><br><br>
+					<p>
+						Please wait, SpotON is trying to locate your spot...
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 </template>
 
 <template name="editSpot">

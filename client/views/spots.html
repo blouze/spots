@@ -45,6 +45,9 @@
 		</div>
 	</div>
 	<ul class="list-group">
+		{{#unless instagramMedia}}
+		<div class="col-xs-12 loader"><i class="fa fa-circle-o-notch fa-spin fa-2x"></i></div>
+		{{/unless}}
 		{{#each instagramMedia}}
 		{{#with this}}
 		<li class="list-group-item">{{> instagramItem}}</li>
@@ -65,7 +68,22 @@
 			<br>
 			<small>{{formatDate createdAt "calendar"}}</small>
 		</h4>
-		<img class="media-object img-rounded img-responsive" src="{{images.low_resolution.url}}" alt="Image"><br>
+		<div class="media-object">
+			{{#if isVideo}}
+			<div class="instagram-box" style="background:url({{images.low_resolution.url}}) no-repeat 50% 50%;">
+				{{#if isVideoPlaying}}
+				<video width="306" height="306" autoplay id="{{id}}"><source src="{{videos.low_resolution.url}}" type="video/mp4"></video>
+				{{else}}
+				<div class="overlay">
+					<span class="play"><i class="fa fa-youtube-play fa-3x"></i></span>
+				</div>
+				{{/if}}
+			</div>
+			{{else}}
+			<img class="img-responsive img-rounded" src="{{images.low_resolution.url}}" alt="Image">
+			{{/if}}
+		</div>
+		<br>
 		<blockquote>{{caption.text}}</blockquote>
 	</div>
 	<img src="{{pictureSquare}}" class="img-responsive" alt="{{name}}">

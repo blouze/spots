@@ -50,6 +50,7 @@ Template.viewSpot.rendered = function () {
 	});
 	Session.set("instagramMedia", null);
 	Session.set("clipboardClicked", false);
+	Session.set("videoPlaying", null)
 };
 
 Template.viewSpot.events({
@@ -69,6 +70,27 @@ Template.instagramItem.helpers({
 	},
 	isVideo: function () {
 		return this.type == "video";
+	},
+	isVideoPlaying: function () {
+		return Session.get("videoPlaying") == this.id;
+	}
+});
+
+Template.instagramItem.events({
+	'click .play': function (e, t) {
+		if (Meteor.isCordova){
+			VideoPlayer.play(this.videos.low_resolution.url);
+		}
+		else {
+			var id = this.id;
+			Session.set("videoPlaying", id);
+			Meteor.setTimeout(function () {
+				var video = document.getElementById(id);
+				video.addEventListener("ended", function() {
+					Session.set("videoPlaying", null)
+				}, true);
+			}, 100);
+		}
 	}
 });
 

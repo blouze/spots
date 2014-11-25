@@ -53,7 +53,8 @@ Meteor.methods({
 		var syncFunc = Meteor.wrapAsync(instagram.mediaRecent);
 		var ids = ["144327057", "10031821", "4462316"]
 		var index = Math.floor(Math.random() * ids.length);
-		var result = syncFunc(ids[index]);
+		//var result = syncFunc(ids[index]);
+		var result = syncFunc("10031821");
 		return result;
 	}
 });

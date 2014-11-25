@@ -17,10 +17,10 @@
 <template name="spotItem">
 	<div class="media">
 		<div class="media-left">
-			<img class="media-object" src="{{pictureThumbnail}}" alt="{{name}}">
+			<img class="media-object img-rounded" src="{{pictureThumbnail}}" alt="{{name}}">
 		</div>
 		<div class="media-body">
-			<h4 class="media-heading"><strong>{{name}}</strong></h4>
+			<h4 class="media-heading"><strong>{{name}}</strong><br><small>{{pseudoAddress}}</small></h4>
 			<p>{{formatDate createdAt "calendar"}}</p>
 		</div>
 	</div>
@@ -33,7 +33,7 @@
 		{{/with}}
 	</div>
 	<div class="well well-lg">
-		<img src="{{pictureSquare}}" class="img-responsive" alt="{{name}}">
+		<img src="{{pictureSquare}}" class="img-responsive img-rounded" alt="{{name}}">
 		<div class="page-header">
 			<h3><strong>{{name}}</strong><br><small>{{hashtag}}</small></h3>
 			<div class="btn-group">
@@ -115,9 +115,6 @@
 		</div>
 		<div class="well well-lg">
 			{{> map}}
-			<div class="pull-right">
-				<strong>[{{userPosition.longitude}}, {{userPosition.latitude}}]</strong>
-			</div>
 		</div>
 		{{> afQuickField name='name'}}
 		{{> afQuickField name='secret'}}

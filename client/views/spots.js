@@ -6,7 +6,12 @@ Template.spotsList.helpers({
 
 Template.spotItem.helpers({
 	pictureThumbnail: function () {
-		return Imgur.toThumbnail(this.picture, Imgur.SMALL_SQUARE);
+		if (this.picture)
+			return Imgur.toThumbnail(this.picture, Imgur.SMALL_SQUARE);
+	},
+	pseudoAddress: function () {
+		if (this.address)
+			return _.last(this.address.split(", "), 2).join(", ");
 	}
 });
 
@@ -99,16 +104,25 @@ Template.instagramItem.events({
 Template.newSpot.rendered = function () {
 	navigator.geolocation.getCurrentPosition(function (position) {
 		Session.set("userPosition", position);
+		Meteor.call('googleGeocode', position.coords.longitude, position.coords.latitude, function (err, results) {
+			if (err)
+				console.log(err);
+			if (results && results.length > 0)
+				Session.set("address", results[0]);
+		});
+		gmaps.setCenter(position.coords);
+		gmaps.addMarker(position.coords);
 	}, function (err) {
 		console.log(
 			'code: '    + err.code    + '\n' +
 			'message: ' + err.message + '\n');
 	},{
 		enableHighAccuracy: true,
-		timeout: 5000,
+		timeout: 30000,
 		maximumAge: 0
 	});
 	Session.set("userPosition", null);
+	Session.set("address", null);
 	Session.set("imgurUpload", null);
 };
 
@@ -121,10 +135,13 @@ Template.newSpot.helpers({
 	userPosition: function () {
 		var position = Session.get("userPosition");
 		if (position) {
-			gmaps.setCenter(position.coords);
-			gmaps.addMarker(position.coords);
 			return position.coords;
 		}
+	},
+	formatted_address: function () {
+		var address = Session.get("address");
+		if (address)
+			return Session.get("address").formatted_address;
 	}
 });
 
@@ -169,6 +186,10 @@ AutoForm.addHooks('insertSpotForm', {
 			var userPosition = Session.get("userPosition");
 			if (userPosition)
 				doc.location = [userPosition.coords.longitude, userPosition.coords.latitude];
+
+			var address = Session.get("address");
+			if (address)
+				doc.address = address.formatted_address;
 
 			var imgurUpload = Session.get("imgurUpload");
 			if (imgurUpload) {

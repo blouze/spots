@@ -44,10 +44,6 @@ instagram = {
 	}
 }
 
-var tagsMedia = function (cb) {
-	cb && cb(null, 'Hello ');
-}
-
 Meteor.methods({
 	instagramMedia: function () {
 		var syncFunc = Meteor.wrapAsync(instagram.mediaRecent);

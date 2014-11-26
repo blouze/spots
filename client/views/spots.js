@@ -11,7 +11,7 @@ Template.spotItem.helpers({
 	},
 	pseudoAddress: function () {
 		if (this.address)
-			return _.last(this.address.split(", "), 2).join(", ");
+			return _.last(this.address.split(" "), 2).join(" ");
 	}
 });
 
@@ -31,15 +31,16 @@ Template.viewSpot.helpers({
 			Meteor.setTimeout(function () {
 				gmaps.setCenter(coords);
 				gmaps.addMarker(coords);
-			}, 500);
+			}, 1000);
 			return coords;
 		}
 	},
+	pseudoAddress: function () {
+		if (this.address)
+			return _.last(this.address.split(" "), 2).join(" ");
+	},
 	hashtag: function () {
 		return "#SpotON_" + this._id;
-	},
-	clipboardClicked: function () {
-		return Session.get("clipboardClicked");
 	},
 	instagramMedia: function () {
 		//console.log(Session.get("instagramMedia"));
@@ -62,8 +63,8 @@ Template.viewSpot.events({
 	'click button#clipBoardBtn': function () {
 		if (Meteor.isCordova){
 			cordova.plugins.clipboard.copy("#SpotON_" + this._id);
-			Session.set("clipboardClicked", true);
 		}
+		$("#modal-clipboard").modal("show");
 	}
 });
 

@@ -1,5 +1,5 @@
 UI.registerHelper("siteName", function () {
-	return "SpotON";
+	return "SHRED";
 });
 
 UI.registerHelper("formatDate", function(datetime, format) {

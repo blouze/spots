@@ -7,12 +7,13 @@ instagram = {
 		instagram.client = new Instagram.createClient('ad05b630c4954c8d973b8863efd9c1d5', '552c3421e84d44a0889e02187864d79a');
 	},
 
-	tagsMedia: function (tag, cb) {
+	tagMedia: function (tag, cb) {
 		if (!instagram.client)
 			instagram.initialize();
-		console.log("[+] Instagram tagsMedia...");
+		console.log("[+] Instagram tagMedia... " + tag);
 
 		instagram.client.tags.media(tag, function (result, error) {
+		//instagram.client.tags.media("SUPRA", function (result, error) {
 			instagram.return(result, error, cb);
 		});
 	},
@@ -45,12 +46,18 @@ instagram = {
 }
 
 Meteor.methods({
-	instagramMedia: function () {
+	instagramUserMedia: function () {
+		console.log("instagramUserMedia");
 		var syncFunc = Meteor.wrapAsync(instagram.mediaRecent);
 		var ids = ["144327057", "10031821", "4462316"]
 		var index = Math.floor(Math.random() * ids.length);
-		//var result = syncFunc(ids[index]);
-		var result = syncFunc("10031821");
+		var result = syncFunc(ids[index]);
+		//var result = syncFunc("10031821");
+		return result;
+	},
+	instagramTagMedia: function (tag) {
+		var syncFunc = Meteor.wrapAsync(instagram.tagMedia);
+		var result = syncFunc(tag);
 		return result;
 	}
 });

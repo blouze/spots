@@ -13,6 +13,7 @@ gmaps = {
 		var mapOptions = {
 			zoom: 12,
 			disableDefaultUI: true,
+			draggable: false,
 			//center: new google.maps.LatLng(53.565, 10.001),
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		};
@@ -35,7 +36,7 @@ gmaps = {
     setCenter: function (coords) {
     	if (!this.map)
     		return;
-		console.log("[+] Google Maps setCenter...");
+    	console.log("[+] Google Maps setCenter...");
 
     	this.center = new google.maps.LatLng(coords.latitude, coords.longitude);
     	this.map.setCenter(this.center);
@@ -44,7 +45,7 @@ gmaps = {
     addMarker: function (coords) {
     	if (!this.map)
     		return;
-		console.log("[+] Google Maps addMarker...");
+    	console.log("[+] Google Maps addMarker...");
 
     	var marker = new google.maps.Marker({
     		map: this.map,
@@ -55,7 +56,10 @@ gmaps = {
     	var ref = this;
 
     	google.maps.event.addListener(marker, 'click', function() {
-    		ref.map.setZoom(15);
+    		if (ref.map.getZoom() == 12)
+    			ref.map.setZoom(15);
+    		else
+    			ref.map.setZoom(12);
     		ref.map.setCenter(marker.getPosition());
     	});
 

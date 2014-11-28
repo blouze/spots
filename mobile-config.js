@@ -1,6 +1,6 @@
 App.info({
-  name: 'SpotON',
-  description: 'Skate everything.',
+  name: 'SHRED',
+  description: 'Track your spots. Share your tricks.',
   version: '0.0.1'
 });
 

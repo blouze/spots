@@ -1,22 +1,21 @@
 <template name="spotsList">
-	<div class="btn-group pull-right">
-		<a href="{{pathFor 'newSpot'}}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i>&nbsp;new spot</a>
-	</div>
-	<div class="page-header">
-		<h3><strong>Last spots added</strong></h3>
-	</div>
-	<div class="list-group">
-		{{#each spots}}
-		{{#with this}}
-		<a href="{{pathFor 'viewSpot'}}" class="list-group-item">{{> spotItem}}</a>
-		{{/with}}
-		{{/each}}
+	<div class="row">
+		<div class="page-header">
+			<h3><strong>Last spots added</strong></h3>
+		</div>
+		<div class="list-group">
+			{{#each spots}}
+			{{#with this}}
+			<a href="{{pathFor 'viewSpot'}}" class="list-group-item">{{> spotItem}}</a>
+			{{/with}}
+			{{/each}}
+		</div>
 	</div>
 </template>
 
 <template name="spotItem">
 	<div class="media">
-		<div class="media-left">
+		<div class="media-left pull-left">
 			<img class="media-object img-rounded" src="{{pictureThumbnail}}" alt="{{name}}">
 		</div>
 		<div class="media-body">
@@ -27,44 +26,57 @@
 </template>
 
 <template name="viewSpot">
-	<div class="btn-group pull-right">
-		{{#with this}}
-		<a href="{{pathFor 'editSpot'}}" class="btn btn-warning btn-lg" id="editBtn"><i class="fa fa-pencil"></i></a>
-		{{/with}}
-	</div>
-	<div class="well well-lg">
-		<img src="{{pictureSquare}}" class="img-responsive img-rounded" alt="{{name}}">
-		<div class="page-header">
-			<h3>
-				<strong>{{name}}</strong><br>
-				<small>{{pseudoAddress}}</small>
-			</h3>
+	<div class="row">
+		<div class="col-sm-10">
+			<div class="spot-header img-rounded" style="background:url({{pictureBackground}}) no-repeat 50% 50%;">
+				<div class="spot-profile img-rounded">
+					<div class="btn-group pull-right">
+						{{#with this}}
+						<a href="{{pathFor 'editSpot'}}" class="btn btn-warning" id="editBtn"><i class="fa fa-pencil"></i></a>
+						{{/with}}
+					</div>
+					<h3>
+						<strong>{{name}}</strong><br>
+						<small>{{pseudoAddress}}</small>
+					</h3>
+					<div class="input-group">
+						<span class="input-group-addon">#</span>
+						<input type="text" id="hashtag" class="form-control" value="{{hashtag}}">
+						<span class="input-group-btn">
+							{{#if isCordova}}
+							<button type="button" class="btn btn-primary" id="clipBoardBtn"><i class="fa fa-clipboard"></i>&nbsp; Copy tag</button>
+							{{else}}
+							<button type="button" class="btn btn-primary" id="selectBtn"><i class="fa fa-clipboard"></i>&nbsp; Select tag</button>
+							{{/if}}
+						</span>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="input-group input-group-lg">
-			<input type="text" id="hashtag" class="form-control" value="{{hashtag}}" disabled="true">
-			<span class="input-group-btn">
-				<button type="button" class="btn btn-default" id="clipBoardBtn"><i class="fa fa-clipboard"></i>&nbsp; Copy</button>
-			</span>
-		</div>
 	</div>
-	<ul class="list-group">
-		{{#unless instagramMedia}}
-		<div class="col-xs-12 loader"><i class="fa fa-circle-o-notch fa-spin fa-2x"></i></div>
-		{{/unless}}
-		{{#each instagramMedia}}
-		{{#with this}}
-		<li class="list-group-item">{{> instagramItem}}</li>
-		{{/with}}
-		{{/each}}
-	</ul>
+	<div class="row">
+		<ul class="list-group">
+			{{#unless instagramMediaLoaded}}
+			<div class="col-xs-12 loader"><i class="fa fa-circle-o-notch fa-spin fa-2x"></i></div>
+			{{/unless}}
+			{{#each instagramMedia}}
+			{{#with this}}
+			<li class="list-group-item">{{> instagramItem}}</li>
+			{{/with}}
+			{{/each}}
+		</ul>
+	</div>
 	<div class="modal fade" id="modal-clipboard">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title"><strong>{{name}}</strong>&nbsp;<small>{{pseudoAddress}}</small></h4>
+					<h4 class="modal-title">
+						<strong>{{name}}</strong><br>
+						<small>{{pseudoAddress}}</small>
+					</h4>
 				</div>
 				<div class="modal-body">
-					<p><small>{{hashtag}}</small></p>
+					<p><small>#{{hashtag}}</small></p>
 					<p>Tag copied to clipboard.</p>
 				</div>
 				<div class="modal-footer">
@@ -89,7 +101,7 @@
 		</h4>
 		<div class="media-object">
 			{{#if isVideo}}
-			<div class="instagram-box" style="background:url({{images.low_resolution.url}}) no-repeat 50% 50%;">
+			<div class="instagram-box img-responsive" style="background:url({{images.low_resolution.url}}) no-repeat 50% 50%;">
 				{{#if isVideoPlaying}}
 				<video width="306" height="306" autoplay id="{{id}}"><source src="{{videos.low_resolution.url}}" type="video/mp4"></video>
 				{{else}}
@@ -142,10 +154,6 @@
 		<button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-check-square-o"></i>&nbsp;Create</button>
 	</div>
 	{{/autoForm}}
-	{{> geolocationModal}}
-</template>
-
-<template name="geolocationModal">
 	<div class="modal fade" id="modal-geolocation" data-backdrop="static">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -155,7 +163,7 @@
 				<div class="modal-body loader">
 					<i class="fa fa-circle-o-notch fa-spin fa-2x"></i><br><br>
 					<p>
-						Please wait, SpotON is trying to locate your spot...
+						Please wait, we're trying to locate your spot...
 					</p>
 				</div>
 				<div class="modal-footer">
@@ -167,10 +175,7 @@
 </template>
 
 <template name="editSpot">
-	<div class="btn-group pull-right">
-		<button type="button" class="btn btn-danger btn-lg" id="deleteSpot"><i class="fa fa-trash-o"></i></button>
-	</div>
-	<div class="well well-lg">
+	<div class="row">
 		<div class="page-header">
 			<h2><strong>{{name}}</strong> <small>edit</small></h2>
 		</div>
@@ -180,6 +185,7 @@
 		</fieldset>
 		<div class="btn-group">
 			<button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-check-square-o"></i>&nbsp;Update</button>
+			<button type="button" class="btn btn-danger btn-lg" id="deleteSpot"><i class="fa fa-trash-o"></i>&nbsp;Delete</button>
 		</div>
 		{{/autoForm}}
 	</div>

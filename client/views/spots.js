@@ -18,9 +18,13 @@ Template.spotItem.helpers({
 
 
 Template.viewSpot.helpers({
-	pictureSquare: function () {
-		if (this.picture)
-			return Imgur.toThumbnail(this.picture, Imgur.BIG_SQUARE);
+	pictureBackground: function () {
+		if (this.picture) {
+			if (Meteor.isCordova)
+				return Imgur.toThumbnail(this.picture, Imgur.MEDIUM_THUMBNAIL);
+			else
+				return Imgur.toThumbnail(this.picture, Imgur.LARGE_THUMBNAIL);
+		}
 	},
 	spotPosition: function () {
 		if (this.location) {
@@ -40,20 +44,35 @@ Template.viewSpot.helpers({
 			return _.last(this.address.split(" "), 2).join(" ");
 	},
 	hashtag: function () {
-		return "#SpotON_" + this._id;
+		if (this._id) {
+			Meteor.call('instagramTagMedia', Meteor.settings.public.hashtag_prefix + this._id, function (err, result) {
+				if (err)
+					console.log(err);
+				Session.set("instagramMedia", result);
+			});
+			return Meteor.settings.public.hashtag_prefix + this._id;
+		}
 	},
 	instagramMedia: function () {
-		//console.log(Session.get("instagramMedia"));
-		return Session.get("instagramMedia");
+		var media = Session.get("instagramMedia");
+		if (media && media.length == 0)
+			Meteor.call('instagramUserMedia', function (err, result) {
+				if (err)
+					console.log(err);
+				Session.set("instagramMedia", result);
+			});
+		return media;
+	},
+	instagramMediaLoaded: function () {
+		var media = Session.get("instagramMedia");
+		return media && media.length >= 0;
+	},
+	isCordova: function () {
+		return Meteor.isCordova;
 	}
 });
 
 Template.viewSpot.rendered = function () {
-	Meteor.call('instagramMedia', {}, function (err, result) {
-		if (err)
-			console.log(err);
-		Session.set("instagramMedia", result);
-	});
 	Session.set("instagramMedia", null);
 	Session.set("clipboardClicked", false);
 	Session.set("videoPlaying", null)
@@ -61,10 +80,11 @@ Template.viewSpot.rendered = function () {
 
 Template.viewSpot.events({
 	'click button#clipBoardBtn': function () {
-		if (Meteor.isCordova){
-			cordova.plugins.clipboard.copy("#SpotON_" + this._id);
-		}
+		cordova.plugins.clipboard.copy("#" +Meteor.settings.public.hashtag_prefix + this._id);
 		$("#modal-clipboard").modal("show");
+	},
+	'click button#selectBtn': function () {
+		$("input#hashtag").select();
 	}
 });
 
@@ -116,10 +136,8 @@ Template.newSpot.rendered = function () {
 		$("#modal-geolocation").modal("hide");
 		Meteor.clearTimeout(modalTimeout);
 	}, function (err) {
-		$("#modal-geolocation").modal("show");
-		console.log(
-			'code: '    + err.code    + '\n' +
-			'message: ' + err.message + '\n');
+		$("#modal-geolocation").modal("hide");
+		Session.set("appError", err);
 	},{
 		enableHighAccuracy: true,
 		timeout: 30000,

@@ -1,8 +1,7 @@
 <head>
-	<title>spotON</title>
-	<script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js">
-    </script>
+	<title>SHRED</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
 </head>
 
 <body>
@@ -11,13 +10,15 @@
 <template name="layout">
 	<div id="wrap">
 		{{> navbar}}
-
 		<div class="container">
-			{{> yield}}
+		<div class="col-md-8 col-md-offset-2">
+				{{> yield}}
+			</div>
 		</div>
 		<div id="push"></div>
 	</div>
 	{{> footer}}
+	{{> appError}}
 </template>
 
 <template name="footer">
@@ -29,15 +30,35 @@
 </template>
 
 <template name="loading">
-	<i class="fa fa-spinner fa-spin fa-2x pull-left"></i>
+	<div class="modal-body loader">
+		<i class="fa fa-circle-o-notch fa-spin fa-2x"></i>
+	</div>
 </template>
 
 <template name="notFound">
 	<blockquote>
-		<h4>Cette page n'existe pas ou n'est pas accessible.</h4>
+		<h4>This page does not exist.</h4>
 	</blockquote>
 </template>
 
 <template name="home">
 	{{> spotsList}}
+</template>
+
+<template name="appError">
+	<div class="modal fade" id="modal-app-error">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"><strong>Hu, ho...</strong></h4>
+				</div>
+				<div class="modal-body">
+					{{{error}}}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Okay</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>

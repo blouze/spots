@@ -1,5 +1,6 @@
 Template.spotsList.helpers({
 	spots: function () {
+		console.log(Spots.find().fetch());
 		return Spots.find({}, {sort: {createdAt: -1}});
 	}
 });

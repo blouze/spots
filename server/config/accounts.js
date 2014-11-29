@@ -3,7 +3,13 @@ ServiceConfiguration.configurations.remove({
 });
 ServiceConfiguration.configurations.insert({
 	service: "instagram",
-	clientId: "ad05b630c4954c8d973b8863efd9c1d5",
+	clientId: Meteor.settings.instagram.client_id,
 	scope:'basic',
-	secret: "552c3421e84d44a0889e02187864d79a"
+	loginStyle: "redirect",
+	secret: Meteor.settings.instagram.client_secret
 });
+
+if ( Meteor.users.find().count() === 0 ) {
+	console.log(Meteor.settings.adminUser);
+	Accounts.createUser(Meteor.settings.adminUser);
+}

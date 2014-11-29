@@ -1,6 +1,7 @@
 /* CSS declarations go here */
 
 @import url(http://fonts.googleapis.com/css?family=Halant:700);
+@import url(http://fonts.googleapis.com/css?family=Norican);
 
 html,
 body {
@@ -10,8 +11,10 @@ body {
 
 .navbar-brand {
 	font-family: 'Halant', sans-serif;
-	font-size: 2em;
+	font-family: 'Norican', cursive;
+	font-size: 2.5em;
 	font-weight: bold;
+	padding: 25.5px 15px;
 }
 
 /* Wrapper for page content to push down footer */
@@ -22,7 +25,7 @@ body {
 	/* Negative indent footer by its height */
 	margin: 0 auto -60px;
 	/* Pad bottom by footer height */
-	padding: 80px 0 80px;
+	padding: 100px 0 80px;
 }
 
 /* Set the fixed height of the footer here */

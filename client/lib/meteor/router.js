@@ -28,4 +28,13 @@ Router.map(function () {
 			return Spots.findOne({_id: this.params._id});
 		}
 	});
+	this.route('userProfile', {
+		path: '/user/:_id',
+		waitOn: function () {
+			return Meteor.subscribe('user', this.params._id);
+		},
+		data: function () {
+			return Meteor.users.findOne({_id: this.params._id});
+		}
+	});
 });

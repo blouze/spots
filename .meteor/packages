@@ -12,10 +12,9 @@ simple:imgur
 mrt:moment
 mdg:geolocation
 http
-mrt:instagram-wrapper
 grokbot:bootstrap-flatly
 service-configuration
-useraccounts:bootstrap
 accounts-password
 bozhao:accounts-instagram
+useraccounts:bootstrap
 

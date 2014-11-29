@@ -1,0 +1,24 @@
+<template name="userProfile">
+	<div class="media">
+		<div class="media-left">
+			<img class="media-object img-rounded" src="{{picture}}" alt="{{name}}"><br>
+		</div>
+		<div class="media-body">
+			<h3 class="media-heading">{{screenName}}</h3>
+			<p>blah</p>
+			{{#if isCurrentUser}}
+			<div class="btn-group-justified">
+				<div class="btn-group">
+					{{> atNavButton}}
+				</div>
+			</div>
+			{{/if}}
+		</div>
+	</div>
+	<div class="row">
+		<div class="page-header">
+			<h4>Recent activity :</h4>
+		</div>
+		{{> spotsList spots}}
+	</div>
+</template>

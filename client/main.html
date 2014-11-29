@@ -11,7 +11,7 @@
 	<div id="wrap">
 		{{> navbar}}
 		<div class="container">
-		<div class="col-md-8 col-md-offset-2">
+			<div class="col-sm-8 col-sm-offset-2 col-md-7">
 				{{> yield}}
 			</div>
 		</div>
@@ -42,7 +42,18 @@
 </template>
 
 <template name="home">
-	{{> spotsList}}
+	<div class="row">
+		{{#if currentUser}}
+		<div class="page-header">
+			<h3>Added recently :</h3>
+		</div>
+		{{> spotsList}}
+		{{else}}
+		<div class="col-sm-8 col-sm-offset-2">
+			{{> atForm}}
+		</div>
+		{{/if}}
+	</div>
 </template>
 
 <template name="appError">

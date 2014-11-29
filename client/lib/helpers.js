@@ -1,5 +1,9 @@
 UI.registerHelper("siteName", function () {
-	return "SHRED";
+	return "Shredd";
+});
+
+UI.registerHelper("createdByCurrentUser", function (doc) {
+	return Meteor.userId() && doc && Meteor.userId() === doc.createdBy;
 });
 
 UI.registerHelper("formatDate", function(datetime, format) {
